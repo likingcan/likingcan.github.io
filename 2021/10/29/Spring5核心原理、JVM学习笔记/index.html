@@ -9,7 +9,7 @@
     
     <title>
         
-            Fiddler抓包安卓 |
+            Spring5核心原理、JVM学习笔记 |
         
         李金灿的博客
     </title>
@@ -124,7 +124,7 @@
     <div class="article-content-container">
 
         <div class="article-title">
-            <span class="title-hover-animation">Fiddler抓包安卓</span>
+            <span class="title-hover-animation">Spring5核心原理、JVM学习笔记</span>
         </div>
 
         
@@ -142,7 +142,7 @@
                     <div class="meta-info">
                         <div class="article-meta-info">
     <span class="article-date article-meta-item">
-        <i class="fas fa-edit"></i>&nbsp;2021-10-28 17:15:06
+        <i class="fas fa-edit"></i>&nbsp;2021-10-29 15:45:08
     </span>
     
     
@@ -159,13 +159,23 @@
         
 
         <div class="article-content markdown-body">
-            <h3 id="Fiddler抓包安卓APP安装证书后仍然不能获取https请求"><a href="#Fiddler抓包安卓APP安装证书后仍然不能获取https请求" class="headerlink" title="Fiddler抓包安卓APP安装证书后仍然不能获取https请求"></a>Fiddler抓包安卓APP安装证书后仍然不能获取https请求</h3><p>问题描述：需要用Fiddler抓包某APP在参照网上文章之后发现请求不了https，请求都是tunnel to 443。</p>
-<p>原因：安卓在7.0版本之后对证书有了修改。多数APP只信任系统自带的证书</p>
-<p>解决办法1：直接将用户自己安装的证书添加到系统证书中去（需要root权限：因为现在大多数手机不支持root所以很难搞）<br>参考文章：<a class="link"   target="_blank" rel="noopener" href="https://blog.csdn.net/liuluok123/article/details/95971731" >fiddler抓安卓7.0以上版本（直接将用户自己安装的证书添加到系统证书中去）<i class="fas fa-external-link-alt"></i></a></p>
-<p>解决方法2：修改APP配置使它信任用户证书（需要拥有源码才行：多用于自己的项目，都有源码了还需要抓包吗？）<br>参考文章：<a class="link"   target="_blank" rel="noopener" href="https://blog.csdn.net/woyaochenggong774/article/details/80448698" >fiddler抓安卓7.0以上版本（直接将用户自己安装的证书添加到系统证书中去）<i class="fas fa-external-link-alt"></i></a></p>
-<p>解决方法3：模拟器，安装个安卓7以下版本的手机。我用的夜神模拟器一次就成功了（建议夜神模拟器看到了给波广告费）</p>
-<p>解决方法4：使用兼容Xposed的框架+JustTrustMe（下载软件模拟请求）<br>参考文章：<a class="link"   target="_blank" rel="noopener" href="https://blog.csdn.net/qq_36562656/article/details/109196342" >fiddler抓安卓7.0以上版本（使用兼容Xposed的框架+JustTrustMe）<i class="fas fa-external-link-alt"></i></a></p>
-<p> 有条件的话推荐第三种或第四种方法，这两天在这个问题上浪费许多时间，写这篇文章希望能让同样遇到这个问题的人少走弯路。</p>
+            </font>
+
+<p>@<a href="%E6%96%87%E7%AB%A0%E7%9B%AE%E5%BD%95">TOC</a></p>
+<hr style=" border:solid; width:100px; height:1px;" color=#000000 size=1">
+
+<h1 id="一、Spring-的设计初衷"><a href="#一、Spring-的设计初衷" class="headerlink" title="一、Spring 的设计初衷"></a>一、Spring 的设计初衷</h1><p>1、基于POJO 的轻量级和最小侵入性编程；</p>
+<p>2、通过依赖注入和面向接口松耦合；</p>
+<p>3、基于切面和惯性进行声明式编程；</p>
+<p>4、通过切面和模板减少样板式代码；</p>
+<h1 id="二、AOP编程理念"><a href="#二、AOP编程理念" class="headerlink" title="二、AOP编程理念"></a>二、AOP编程理念</h1><h2 id="1-AOP介绍"><a href="#1-AOP介绍" class="headerlink" title="1.AOP介绍"></a>1.AOP介绍</h2><p>AOP即面向切面编程，是一种编程思想。它允许程序员对横切关注点或横切典型的职责分界线的行为进行模块化。其核心构造是切面，它将拿下影响到多个类的行为封装到可重用的模块中。在Spring中AOP集成到了Spring事务、日志和其他各种特性的上下文中。<br>AOP编程的常用场景有：Authentication 权限、Caching 缓存、Error handling 错误处理、Debugging　　调试、Logging日志、Transactions 事务。<br>主要解决了面向对象编程部分场景代码重复率高的问题。</p>
+<h2 id="2-AOP使用方法"><a href="#2-AOP使用方法" class="headerlink" title="2.AOP使用方法"></a>2.AOP使用方法</h2><p>@Aspect声明这是一个切面Bean（类注解）<br>@Pointcut(“execution(切入点的地址)”) 注解，用来定义一个切点，即上文中所关注的某件事情的入口，切入点定义了事件触发时机。（方法注解）<br>@Before（“@Pointcut注解的方法名”）前置通知<br>@After（“@Pointcut注解的方法名”）后置通知<br>@Around（“@Pointcut注解的方法名”）环绕通知<br>@AfterReturn配置返回后通知。<br>@AfterThrowing 配置异常通知。</p>
+<h2 id="3-AOP原理"><a href="#3-AOP原理" class="headerlink" title="3.AOP原理"></a>3.AOP原理</h2><p>1.SpringAop接入由BeanPostProcessor后置处理器开始。<br>该后置处理器的掉用发生在SpringIoc容器完成Bean实例对象的创建的依赖注入之后。</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">public interface BeanPostProcessor &#123;</span><br><span class="line">    //bean初始化方法调用前被调用</span><br><span class="line">    Object postProcessBeforeInitialization(Object bean, String beanName) throws BeansException;</span><br><span class="line">    //bean初始化方法调用后被调用</span><br><span class="line">    Object postProcessAfterInitialization(Object bean, String beanName) throws BeansException;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>2 AbstractAutowireCapableBeanFactory 类的CreateBean()和initializeBean()方法<br>为容器创建的Bean实例对象添加BeanPostPrecessor后置处理器。</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br></pre></td><td class="code"><pre><span class="line">/**</span><br><span class="line"> * Initialize the given bean instance, applying factory callbacks</span><br><span class="line"> * as well as init methods and bean post processors.</span><br><span class="line"> * &lt;p&gt;Called from &#123;@link #createBean&#125; for traditionally defined beans,</span><br><span class="line"> * and from &#123;@link #initializeBean&#125; for existing bean instances.</span><br><span class="line"> */</span><br><span class="line">protected Object initializeBean(final String beanName, final Object bean, @Nullable RootBeanDefinition mbd) &#123;</span><br><span class="line">	Object wrappedBean = bean;</span><br><span class="line">	if (mbd == null || !mbd.isSynthetic()) &#123;</span><br><span class="line">       // 回调BeanPostProcessor的postProcessBeforeInitialization方法</span><br><span class="line">		wrappedBean = applyBeanPostProcessorsBeforeInitialization(wrappedBean, beanName);</span><br><span class="line">	&#125;</span><br><span class="line"></span><br><span class="line">	try &#123;</span><br><span class="line">       // 调用 bean的 initializingBean的接口方法：afterPropertiesSet：调用自定义的initMethod。</span><br><span class="line">		invokeInitMethods(beanName, wrappedBean, mbd);</span><br><span class="line">	&#125;</span><br><span class="line">	...</span><br><span class="line">	//  调用 BeanPostProcessor的 postProcessorAfterInitialization方法</span><br><span class="line">	if (mbd == null || !mbd.isSynthetic()) &#123;</span><br><span class="line">		wrappedBean = applyBeanPostProcessorsAfterInitialization(wrappedBean, beanName);</span><br><span class="line">	&#125;</span><br><span class="line"></span><br><span class="line">	return wrappedBean;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>其中PostProcessorsAfterInitialization（）方法中掉用了方法wrapIfNecessary()其中又掉用了poxyFactory.getProxy()方法获取代理。<br>代理对象执行目标方法<br>得到目标方法的拦截器链（增强器包装成拦截器MethodInterceptor）<br>利用拦截器的链式机制，依次进入每一个拦截器进行执行；</p>
+<h1 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h1><p>Spring AOP（面向切面编程）是在Bean初始化过程中通过代理的机制生产一个代理对象，实现在切入点方法的前置、后置统一处理。从而达到解耦、提升代码复用率等作用。</p>
 
         </div>
 
@@ -173,11 +183,11 @@
             <div class="post-copyright-info">
                 <div class="article-copyright-info-container">
     <ul>
-        <li>Post title：Fiddler抓包安卓</li>
+        <li>Post title：Spring5核心原理、JVM学习笔记</li>
         <li>Post author：不愿透露姓名的当事人</li>
-        <li>Create time：2021-10-28 17:15:06</li>
+        <li>Create time：2021-10-29 15:45:08</li>
         <li>
-            Post link：https://keep.xpoet.cn/2021/10/28/Fiddler抓包安卓/
+            Post link：https://keep.xpoet.cn/2021/10/29/Spring5核心原理、JVM学习笔记/
         </li>
         <li>
             Copyright Notice：All articles in this blog are licensed under <a class="license" target="_blank" rel="noopener" href="https://creativecommons.org/licenses/by-nc-sa/4.0/deed.zh">BY-NC-SA</a> unless stating additionally.
@@ -194,18 +204,33 @@
                     <div class="article-prev">
                         <a class="prev"
                            rel="prev"
-                           href="/2021/10/29/Spring5%E6%A0%B8%E5%BF%83%E5%8E%9F%E7%90%86%E3%80%81JVM%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0/"
+                           href="/2021/10/29/Spring5%E6%A0%B8%E5%BF%83%E5%8E%9F%E7%90%86%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B02/"
                         >
                             <span class="left arrow-icon flex-center">
                               <i class="fas fa-chevron-left"></i>
                             </span>
                             <span class="title flex-center">
-                                <span class="post-nav-title-item">Spring5核心原理、JVM学习笔记</span>
+                                <span class="post-nav-title-item">Spring5核心原理学习笔记2</span>
                                 <span class="post-nav-item">Prev posts</span>
                             </span>
                         </a>
                     </div>
                 
+                
+                    <div class="article-next">
+                        <a class="next"
+                           rel="next"
+                           href="/2021/10/28/Fiddler%E6%8A%93%E5%8C%85%E5%AE%89%E5%8D%93/"
+                        >
+                            <span class="title flex-center">
+                                <span class="post-nav-title-item">Fiddler抓包安卓</span>
+                                <span class="post-nav-item">Next posts</span>
+                            </span>
+                            <span class="right arrow-icon flex-center">
+                              <i class="fas fa-chevron-right"></i>
+                            </span>
+                        </a>
+                    </div>
                 
             </div>
         
@@ -392,7 +417,7 @@
         <aside class="page-aside">
             <div class="post-toc-wrap">
     <div class="post-toc">
-        <ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#Fiddler%E6%8A%93%E5%8C%85%E5%AE%89%E5%8D%93APP%E5%AE%89%E8%A3%85%E8%AF%81%E4%B9%A6%E5%90%8E%E4%BB%8D%E7%84%B6%E4%B8%8D%E8%83%BD%E8%8E%B7%E5%8F%96https%E8%AF%B7%E6%B1%82"><span class="nav-text">Fiddler抓包安卓APP安装证书后仍然不能获取https请求</span></a></li></ol>
+        <ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#%E4%B8%80%E3%80%81Spring-%E7%9A%84%E8%AE%BE%E8%AE%A1%E5%88%9D%E8%A1%B7"><span class="nav-text">一、Spring 的设计初衷</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E4%BA%8C%E3%80%81AOP%E7%BC%96%E7%A8%8B%E7%90%86%E5%BF%B5"><span class="nav-text">二、AOP编程理念</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#1-AOP%E4%BB%8B%E7%BB%8D"><span class="nav-text">1.AOP介绍</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#2-AOP%E4%BD%BF%E7%94%A8%E6%96%B9%E6%B3%95"><span class="nav-text">2.AOP使用方法</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#3-AOP%E5%8E%9F%E7%90%86"><span class="nav-text">3.AOP原理</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E6%80%BB%E7%BB%93"><span class="nav-text">总结</span></a></li></ol>
     </div>
 </div>
         </aside>
